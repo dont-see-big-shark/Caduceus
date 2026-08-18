@@ -1,0 +1,39 @@
+name: Package macOS Release
+
+on:
+  push:
+    tags:
+      - 'alpha-*'
+      - 'beta-*'
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          # Keep in sync with local dev toolchain (flutter --version).
+          flutter-version: '3.47.0'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: flutter_app
+
+      - name: Build and package DMG
+        run: ./scripts/package_macos.sh
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.dmg
+          generate_release_notes: true
