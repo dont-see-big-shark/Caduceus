@@ -1,0 +1,19 @@
+name: hermes_protocol
+description: >-
+  Dart client for the Hermes Agent control plane — JSON-RPC over the tui_gateway
+  WebSocket, plus connection diagnostics. Pure Dart, no Flutter dependency, so
+  it can be tested without a device and reused outside the app.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  web_socket_channel: ^3.0.0
+  http: ^1.2.0
+  meta: ^1.15.0
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^5.0.0

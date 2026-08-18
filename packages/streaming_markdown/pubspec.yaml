@@ -1,0 +1,20 @@
+name: streaming_markdown
+description: >-
+  Incremental Markdown rendering for streaming LLM output. Parses each block
+  once instead of re-parsing the accumulated response on every frame.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.9.0
+  flutter: '>=3.24.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_markdown_plus: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

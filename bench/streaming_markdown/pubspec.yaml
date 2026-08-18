@@ -1,0 +1,30 @@
+name: streaming_markdown_bench
+description: >-
+  Caduceus P0 Spike A — measures whether Flutter can render a streaming Markdown
+  response smoothly, by comparing a naive per-token renderer against an
+  incremental one on an identical token stream.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The Markdown renderer under test. Google discontinued `flutter_markdown`
+  # (flutter/flutter#162966); this is the community successor. Both strategies
+  # use it, so the only variable in the comparison is the strategy itself.
+  flutter_markdown_plus: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  # The parser underneath flutter_markdown_plus. Depended on directly so the
+  # absolute cost of a parse can be timed without a widget tree in the way.
+  markdown: ^7.0.0
+
+flutter:
+  uses-material-design: true

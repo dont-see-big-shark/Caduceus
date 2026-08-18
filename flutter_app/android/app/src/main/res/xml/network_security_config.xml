@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Hermes is self-hosted. Reaching it over an ssh -L tunnel or on a LAN box
+  without TLS is a normal deployment, but Android blocks cleartext by default
+  from API 28 onward.
+
+  Cleartext is permitted only for loopback and private address ranges — the
+  tunnel and LAN cases — so a misconfigured public URL still fails loudly
+  instead of silently downgrading. Public hosts must use TLS.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">10.0.2.2</domain> <!-- emulator host -->
+    </domain-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

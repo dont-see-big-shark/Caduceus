@@ -1,0 +1,36 @@
+/docs/inner
+/inner
+inner/
+/flutter_app/build
+
+# Flutter / Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+*.iml
+
+# Generated platform runners — regenerate with `flutter create --platforms=...`
+**/android/.gradle/
+**/android/local.properties
+**/ios/Pods/
+**/ios/.symlinks/
+**/macos/Pods/
+
+# pubspec.lock is intentionally NOT ignored — benchmark results are only
+# comparable across runs if the dependency versions are pinned.
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# macOS
+.DS_Store
+
+# Benchmark output — regenerate, never trust a stale copy
+bench/streaming_markdown/bench_*.json
+
+# Packaged builds — see scripts/package_macos.sh
+dist/

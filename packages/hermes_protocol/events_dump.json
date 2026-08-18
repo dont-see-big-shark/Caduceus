@@ -1,0 +1,484 @@
+{
+  "gateway.ready": {
+    "type": "gateway.ready",
+    "payload": {
+      "skin": {
+        "name": "default",
+        "colors": {
+          "banner_border": "#CD7F32",
+          "banner_title": "#FFD700",
+          "banner_accent": "#FFBF00",
+          "banner_dim": "#B8860B",
+          "banner_text": "#FFF8DC",
+          "ui_accent": "#FFBF00",
+          "ui_label": "#DAA520",
+          "ui_ok": "#4caf50",
+          "ui_error": "#ef5350",
+          "ui_warn": "#ffa726",
+          "prompt": "#FFF8DC",
+          "input_rule": "#CD7F32",
+          "response_border": "#FFD700",
+          "status_bar_bg": "#1a1a2e",
+          "session_label": "#DAA520",
+          "session_border": "#8B8682"
+        },
+        "branding": {
+          "agent_name": "Hermes Agent",
+          "welcome": "Welcome to Hermes Agent! Type your message or /help for commands.",
+          "goodbye": "Goodbye! ⚕",
+          "response_label": " ⚕ Hermes ",
+          "prompt_symbol": "❯",
+          "help_header": "(^_^)? Available Commands"
+        },
+        "banner_logo": "",
+        "banner_hero": "",
+        "tool_prefix": "┊",
+        "help_header": "(^_^)? Available Commands"
+      }
+    }
+  },
+  "session.info": {
+    "type": "session.info",
+    "session_id": "f46f908b",
+    "payload": {
+      "model": "glm-5-2-260617",
+      "provider": "custom",
+      "reasoning_effort": "medium",
+      "service_tier": "",
+      "fast": false,
+      "yolo": false,
+      "approval_mode": "smart",
+      "tools": {
+        "browser": [
+          "browser_back",
+          "browser_click",
+          "browser_console",
+          "browser_get_images",
+          "browser_navigate",
+          "browser_press",
+          "browser_scroll",
+          "browser_snapshot",
+          "browser_type",
+          "browser_vision"
+        ],
+        "browser-cdp": [
+          "browser_cdp",
+          "browser_dialog"
+        ],
+        "clarify": [
+          "clarify"
+        ],
+        "cronjob": [
+          "cronjob"
+        ],
+        "delegation": [
+          "delegate_task"
+        ],
+        "code_execution": [
+          "execute_code"
+        ],
+        "mcp-agentchat-tencent-docs-7178bc75": [
+          "mcp__agentchat_tencent_docs_7178bc75__copy_doc",
+          "mcp__agentchat_tencent_docs_7178bc75__create_doc",
+          "mcp__agentchat_tencent_docs_7178bc75__create_folder",
+          "mcp__agentchat_tencent_docs_7178bc75__delete_doc",
+          "mcp__agentchat_tencent_docs_7178bc75__delete_folder",
+          "mcp__agentchat_tencent_docs_7178bc75__filter_files",
+          "mcp__agentchat_tencent_docs_7178bc75__get_doc",
+          "mcp__agentchat_tencent_docs_7178bc75__get_folder",
+          "mcp__agentchat_tencent_docs_7178bc75__list_folder",
+          "mcp__agentchat_tencent_docs_7178bc75__move_folder",
+          "mcp__agentchat_tencent_docs_7178bc75__pin_doc",
+          "mcp__agentchat_tencent_docs_7178bc75__rename_doc",
+          "mcp__agentchat_tencent_docs_7178bc75__rename_folder",
+          "mcp__agentchat_tencent_docs_7178bc75__search_docs",
+          "mcp__agentchat_tencent_docs_7178bc75__search_files",
+          "mcp__agentchat_tencent_docs_7178bc75__set_doc_watermark",
+          "mcp__agentchat_tencent_docs_7178bc75__share_doc",
+          "mcp__agentchat_tencent_docs_7178bc75__star_doc",
+          "mcp__agentchat_tencent_docs_7178bc75__update_doc"
+        ],
+        "mcp-notebooklm": [
+          "mcp__notebooklm__batch",
+          "mcp__notebooklm__chat_configure",
+          "mcp__notebooklm__cross_notebook_query",
+          "mcp__notebooklm__download_artifact",
+          "mcp__notebooklm__export_artifact",
+          "mcp__notebooklm__get_prompt",
+          "mcp__notebooklm__label",
+          "mcp__notebooklm__list_prompts",
+          "mcp__notebooklm__list_resources",
+          "mcp__notebooklm__note",
+          "mcp__notebooklm__notebook_create",
+          "mcp__notebooklm__notebook_delete",
+          "mcp__notebooklm__notebook_describe",
+          "mcp__notebooklm__notebook_get",
+          "mcp__notebooklm__notebook_list",
+          "mcp__notebooklm__notebook_query",
+          "mcp__notebooklm__notebook_query_start",
+          "mcp__notebooklm__notebook_query_status",
+          "mcp__notebooklm__notebook_rename",
+          "mcp__notebooklm__notebook_share_batch",
+          "mcp__notebooklm__notebook_share_invite",
+          "mcp__notebooklm__notebook_share_public",
+          "mcp__notebooklm__notebook_share_status",
+          "mcp__notebooklm__pipeline",
+          "mcp__notebooklm__read_resource",
+          "mcp__notebooklm__refresh_auth",
+          "mcp__notebooklm__research_import",
+          "mcp__notebooklm__research_start",
+          "mcp__notebooklm__research_status",
+          "mcp__notebooklm__save_auth_tokens",
+          "mcp__notebooklm__server_info",
+          "mcp__notebooklm__source_add",
+          "mcp__notebooklm__source_delete",
+          "mcp__notebooklm__source_describe",
+          "mcp__notebooklm__source_get_content",
+          "mcp__notebooklm__source_list_drive",
+          "mcp__notebooklm__source_rename",
+          "mcp__notebooklm__source_sync_drive",
+          "mcp__notebooklm__studio_create",
+          "mcp__notebooklm__studio_delete",
+          "mcp__notebooklm__studio_revise",
+          "mcp__notebooklm__studio_status",
+          "mcp__notebooklm__tag"
+        ],
+        "google_meet": [
+          "meet_join",
+          "meet_leave",
+          "meet_say",
+          "meet_status",
+          "meet_transcript"
+        ],
+        "memory": [
+          "memory"
+        ],
+        "file": [
+          "patch",
+          "read_file",
+          "search_files",
+          "write_file"
+        ],
+        "terminal": [
+          "process",
+          "terminal"
+        ],
+        "project": [
+          "project_create",
+          "project_list",
+          "project_switch"
+        ],
+        "session_search": [
+          "session_search"
+        ],
+        "skills": [
+          "skill_manage",
+          "skill_view",
+          "skills_list"
+        ],
+        "tts": [
+          "text_to_speech"
+        ],
+        "todo": [
+          "todo"
+        ],
+        "video": [
+          "video_analyze"
+        ],
+        "vision": [
+          "vision_analyze"
+        ],
+        "web": [
+          "web_extract",
+          "web_search"
+        ],
+        "other": [
+          "hindsight_retain",
+          "hindsight_recall",
+          "hindsight_reflect"
+        ]
+      },
+      "skills": {
+        "general": [
+          "agent-browser",
+          "agent-memory",
+          "annas-archive",
+          "apple-icloud-integration",
+          "ask-matt",
+          "asking-with-evidence",
+          "bilibili-all-in-one",
+          "browser-use",
+          "chinese-ebook-downloader",
+          "claude-handoff",
+          "cloudbase",
+          "code-review",
+          "codebase-design",
+          "configuring-vision",
+          "design-an-interface",
+          "diagnosing-bugs",
+          "system-monitor",
+          "Docker",
+          "dogfood",
+          "domain-modeling",
+          "edit-article",
+          "extracting-structure",
+          "find-skill-skillhub",
+          "find-skills",
+          "findmy-location",
+          "g0dm0d3",
+          "git-guardrails-claude-code",
+          "github",
+          "google-drive",
+          "grill-me",
+          "grill-with-docs",
+          "grilling",
+          "handoff",
+          "hermes-desktop-plugins",
+          "hermes-desktop-remote-troubleshooting",
+          "icloud-findmy",
+          "implement",
+          "improve-codebase-architecture",
+          "learning-from-mistakes",
+          "loop-me",
+          "migrate-to-shoehorn",
+          "obsidian-vault",
+          "playwright-cli",
+          "proactive-agent",
+          "prototype",
+          "qa",
+          "recovering-from-errors",
+          "request-refactor-plan",
+          "resolving-merge-conflicts",
+          "scaffold-exercises",
+          "self-improvement",
+          "Self-Improving + Proactive Agent",
+          "setup-matt-pocock-skills",
+          "setup-pre-commit",
+          "sharing-results",
+          "skill-vetter",
+          "summarize",
+          "tdd",
+          "teach",
+          "the-loop",
+          "tmeet-skill",
+          "to-spec",
+          "to-tickets",
+          "triage",
+          "ubiquitous-language",
+          "video-memory",
+          "watch",
+          "watching-videos",
+          "wayfinder",
+          "web-search",
+          "web-tools-guide",
+          "whisper-transcribe",
+          "wizard",
+          "writing-beats",
+          "writing-fragments",
+          "writing-great-skills",
+          "writing-shape",
+          "zlibrary"
+        ],
+        "autonomous-ai-agents": [
+          "agent-memory-synchronization",
+          "antigravity-cli",
+          "hermes-agent",
+          "hermes-config-management",
+          "multi-agent-delegation"
+        ],
+        "creative": [
+          "architecture-diagram",
+          "humanizer",
+          "japanese-learning-mindmaps",
+          "world-music-theory"
+        ],
+        "devops": [
+          "cli-proxy-api-server",
+          "model-quota-battery-report",
+          "troubleshooting-hermes",
+          "volcengine-ark-agent-plan-balance"
+        ],
+        "japanese-learning": [
+          "japanese-word-root-mindmap"
+        ],
+        "media": [
+          "bilingual-media-transcription",
+          "multilingual-audio-processing",
+          "video-courseware-extractor"
+        ],
+        "productivity": [
+          "bilibili-mindmap-extractor",
+          "icloud-automation",
+          "maps",
+          "nano-pdf",
+          "notebooklm-setup",
+          "notebooklm",
+          "ocr-and-documents",
+          "powerpoint",
+          "video-courseware-generator"
+        ],
+        "research": [
+          "arxiv",
+          "document-retrieval"
+        ],
+        "software-development": [
+          "git-authentication",
+          "hermes-agent-skill-authoring",
+          "node-inspect-debugger",
+          "plan",
+          "python-debugpy",
+          "requesting-code-review",
+          "spike",
+          "systematic-debugging",
+          "test-driven-development"
+        ]
+      },
+      "cwd": "/",
+      "branch": "",
+      "project": null,
+      "personality": "creative",
+      "running": true,
+      "title": "",
+      "stored_session_id": "20260802_103113_b2086a",
+      "desktop_contract": 4,
+      "version": "0.19.0",
+      "release_date": "2026.7.20",
+      "update_behind": 0,
+      "update_command": "pip install --upgrade hermes-agent",
+      "usage": {
+        "model": "glm-5-2-260617",
+        "input": 0,
+        "output": 0,
+        "reasoning": 0,
+        "prompt": 0,
+        "completion": 0,
+        "total": 0,
+        "calls": 0,
+        "compressions": 0,
+        "active_subagents": 0
+      },
+      "profile_name": "default",
+      "install_warning": "pip installs are no longer an officially supported platform and will not receive further updates. See https://hermes-agent.nousresearch.com/docs/getting-started/platform-support for supported install methods.",
+      "mcp_servers": [
+        {
+          "name": "notebooklm",
+          "transport": "stdio",
+          "tools": 43,
+          "connected": true,
+          "disabled": false,
+          "status": "connected",
+          "sampling": {
+            "requests": 0,
+            "errors": 0,
+            "tokens_used": 0,
+            "tool_use_count": 0
+          }
+        },
+        {
+          "name": "agentchat-tencent-docs-7178bc75",
+          "transport": "http",
+          "tools": 19,
+          "connected": true,
+          "disabled": false,
+          "status": "connected",
+          "sampling": {
+            "requests": 0,
+            "errors": 0,
+            "tokens_used": 0,
+            "tool_use_count": 0
+          }
+        }
+      ],
+      "system_prompt": ""
+    }
+  },
+  "message.start": {
+    "type": "message.start",
+    "session_id": "f46f908b"
+  },
+  "thinking.delta": {
+    "type": "thinking.delta",
+    "session_id": "f46f908b",
+    "payload": {
+      "text": "(⊙_⊙) musing..."
+    }
+  },
+  "reasoning.delta": {
+    "type": "reasoning.delta",
+    "session_id": "f46f908b",
+    "payload": {
+      "text": "The"
+    }
+  },
+  "tool.generating": {
+    "type": "tool.generating",
+    "session_id": "f46f908b",
+    "payload": {
+      "name": "terminal"
+    }
+  },
+  "tool.start": {
+    "type": "tool.start",
+    "session_id": "f46f908b",
+    "payload": {
+      "tool_id": "call_60357a831b464c4eb2d5d7e7",
+      "name": "terminal",
+      "context": "Running ls ~"
+    }
+  },
+  "tool.complete": {
+    "type": "tool.complete",
+    "session_id": "f46f908b",
+    "payload": {
+      "tool_id": "call_60357a831b464c4eb2d5d7e7",
+      "name": "terminal",
+      "args": {
+        "command": "ls ~"
+      },
+      "duration_s": 0.09184646606445312,
+      "result": {
+        "output": "buugeng_techniques_guide.md\ncliproxyapi\nDownloads\ninstall.sh\njapanese-flash-card\nwatch-skill",
+        "exit_code": 0,
+        "error": null
+      }
+    }
+  },
+  "message.delta": {
+    "type": "message.delta",
+    "session_id": "f46f908b",
+    "payload": {
+      "text": "\n\nHome"
+    }
+  },
+  "reasoning.available": {
+    "type": "reasoning.available",
+    "session_id": "f46f908b",
+    "payload": {
+      "text": "Home directory contains **6 entries**:\n\n1. `buugeng_techniques_guide.md`\n2. `cliproxyapi`\n3. `Downloads`\n4. `install.sh`\n5. `japanese-flash-card`\n6. `watch-skill`"
+    }
+  },
+  "message.complete": {
+    "type": "message.complete",
+    "session_id": "f46f908b",
+    "payload": {
+      "text": "Home directory contains **6 entries**:\n\n1. `buugeng_techniques_guide.md`\n2. `cliproxyapi`\n3. `Downloads`\n4. `install.sh`\n5. `japanese-flash-card`\n6. `watch-skill`",
+      "usage": {
+        "model": "glm-5-2-260617",
+        "input": 100,
+        "output": 108,
+        "reasoning": 0,
+        "prompt": 65508,
+        "completion": 108,
+        "total": 65616,
+        "calls": 2,
+        "context_used": 32784,
+        "context_max": 202752,
+        "context_percent": 16,
+        "compressions": 0,
+        "active_subagents": 0
+      },
+      "status": "complete",
+      "reasoning": "Let me count the entries: 6 entries."
+    }
+  }
+}

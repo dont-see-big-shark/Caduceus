@@ -1,0 +1,14 @@
+name: markdown
+description: >-
+  A portable Markdown library written in Dart. Local patched copy: the GFM
+  alert-block content regex `(.*)*` catastrophically backtracks on long lines
+  (`> ?\s?(.*)*`), freezing the transcript; patched to `.*`.
+version: 7.3.1
+repository: https://github.com/dart-lang/tools/tree/main/pkgs/markdown
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  args: ^2.0.0
+  meta: ^1.3.0
