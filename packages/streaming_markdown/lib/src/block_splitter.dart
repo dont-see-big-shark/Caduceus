@@ -10,6 +10,8 @@ library;
 
 import 'dart:collection';
 
+import 'package:caduceus_native/caduceus_native.dart';
+
 class BlockSplit {
   const BlockSplit(this.stable, this.tail);
 
@@ -156,6 +158,33 @@ class IncrementalSplitter {
 /// continuation, and link reference definitions can all extend a block across
 /// what looks like a boundary, so we only split on a blank line — the one
 /// separator that CommonMark guarantees terminates a leaf block.
+/// Native-accelerated markdown splitting.
+/// Falls back to pure Dart splitMarkdown if native engine is unavailable.
+BlockSplit splitMarkdownNative(String buffer) {
+  if (buffer.isEmpty) return const BlockSplit([], '');
+
+  final nativeResult = MarkdownNative.splitBlocks(buffer);
+  if (nativeResult == null) {
+    return splitMarkdown(buffer);
+  }
+
+  final blocks = <String>[];
+  for (final span in nativeResult.spans) {
+    if (span.startOffset >= 0 && span.endOffset <= buffer.length && span.endOffset > span.startOffset) {
+      final blockText = buffer.substring(span.startOffset, span.endOffset).trim();
+      if (blockText.isNotEmpty) {
+        blocks.add(blockText);
+      }
+    }
+  }
+
+  final tail = (nativeResult.tailStart >= 0 && nativeResult.tailStart < buffer.length)
+      ? buffer.substring(nativeResult.tailStart)
+      : '';
+
+  return BlockSplit(blocks, tail);
+}
+
 BlockSplit splitMarkdown(String buffer) {
   if (buffer.isEmpty) return const BlockSplit([], '');
 

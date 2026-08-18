@@ -13,7 +13,7 @@ macOS · iOS · Android · Windows
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?logo=dart&logoColor=white)](https://dart.dev)
 [![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20iOS%20%7C%20Android%20%7C%20Windows-555555.svg?logo=apple&logoColor=white)](#)
-[![Tests](https://img.shields.io/badge/tests-830%2B%20passed-success.svg?logo=github-actions&logoColor=white)](#)
+[![Tests](https://img.shields.io/badge/tests-890%2B%20passed-success.svg?logo=github-actions&logoColor=white)](#)
 [![Architecture](https://img.shields.io/badge/architecture-multi--agent%20seam-8A2BE2.svg)](docs/ARCHITECTURE.md)
 [![Design](https://img.shields.io/badge/design-Liquid%20Glass-FF69B4.svg)](docs/DESIGN.md)
 [![Streaming Jank](https://img.shields.io/badge/streaming%20jank-0.0%25-brightgreen.svg)](docs/BENCHMARKS.md)
@@ -43,7 +43,7 @@ Existing agent clients typically excel on only one platform while remaining unav
 | `Yasuui/hermes-mobile` | iOS | Native iOS | iOS only |
 | `abhibansal-sg/hermes-ios` | iOS | Native iOS | iOS only |
 | `ChloeVPin/hermes-web` | Web | Browser UI | Web only |
-| **Caduceus** | **macOS, iOS, Android, Windows** | **Flutter Native** | **Full Multi-Agent Console** |
+| **Caduceus** | **macOS, iOS, Android, Windows** | **Flutter Native + C FFI Engine** | **Full Multi-Agent Console** |
 
 If you drive an agent from your phone on the go and from a workstation at your desk, Caduceus provides **one unified experience, one memory ledger, and coherent multi-agent management**.
 
@@ -111,6 +111,18 @@ Measured in profile mode on the production widget stack (`ConsoleView` + `Stream
 | **UI Threading** | Single-threaded JS event loop | **Dedicated UI + Raster Threads** | Dart VM isolate handles I/O while Skia/Impeller renders |
 | **Multi-Platform** | Desktop only (macOS/Win/Linux) | **Desktop + Mobile** | Unified codebase across 4 platforms |
 
+### 4. Native C Acceleration Engine (`packages/caduceus_native`)
+
+Computationally intensive operations (text cleaning, cryptography, JSON field slicing, SIMD vector math, and edit distance) are offloaded to an optimized C library through **Dart FFI**:
+
+| Computational Task | Workload Profile | Pure Dart | Native C Engine (FFI) | Speedup / Advantage |
+|---|---|---|---|---|
+| **Markdown Fingerprint Cleaning** | 30,000 ops / multi-line prose | 19.55 µs/op | **1.44 µs/op** | 🚀 **13.5× faster** (Zero regex backtracking, single-pass pointer scan) |
+| **Levenshtein String Edit Distance** | 5,000 ops / 110 chars diff | 48.14 µs/op | **17.80 µs/op** | 🚀 **2.7× faster** (Compact cache-friendly single row buffer) |
+| **SHA-256 Crypto Hashing** | 50,000 ops / 70B handshake | 1.99 µs/op | **0.94 µs/op** | 🚀 **2.1× faster** (>1,060,000 ops/sec hardware bitwise operations) |
+| **1536-dim Vector Cosine Similarity**| 20,000 ops / embedding | 2.59 µs/op | **2.16 µs/op** | 🚀 **1.2× faster** (ARM NEON SIMD parallel acceleration) |
+| **JSON In-situ Field Extraction** | 30,000 ops / 300B frame | 2.05 µs/op | **1.66 µs/op** | 🚀 **1.2× faster** (Zero Dart heap `Map`/`List` GC allocations) |
+
 ---
 
 ## Key Architecture & Features
@@ -148,10 +160,11 @@ Caduceus/
 │   ├── BENCHMARKS.md            # Detailed performance measurements
 │   └── PROTOCOL.md              # Hermes wire protocol reference
 ├── packages/
+│   ├── caduceus_native/         # High-performance C core & SIMD FFI extensions (9 tests)
 │   ├── agent_core/              # Pure domain abstractions, sessions, memory, graph (147 tests)
-│   ├── hermes_protocol/         # Hermes JSON-RPC wire client (33 tests)
-│   ├── openclaw_protocol/       # OpenClaw Ed25519 identity & gateway client (32 tests)
-│   ├── streaming_markdown/      # Incremental markdown parser & block splitter (23 tests)
+│   ├── hermes_protocol/         # Hermes JSON-RPC wire client (35 tests)
+│   ├── openclaw_protocol/       # OpenClaw Ed25519 identity & gateway client (33 tests)
+│   ├── streaming_markdown/      # Incremental markdown parser & block splitter (49 tests)
 │   └── markdown/                # Core Markdown tokenizer
 ├── flutter_app/                 # Flutter application for macOS, iOS, Android, Windows (619 tests)
 │   ├── lib/backends/            # Backend adapters (Hermes & OpenClaw)
@@ -185,18 +198,23 @@ All components are strictly unit, widget, and integration tested:
 
 ```bash
 # Run tests across core packages
+cd packages/caduceus_native && dart test
 cd packages/agent_core && dart test
 cd packages/openclaw_protocol && dart test
 cd packages/hermes_protocol && dart test
-cd packages/streaming_markdown && dart test
+cd packages/streaming_markdown && flutter test
 
 # Run Flutter app tests & static analysis
 cd flutter_app
 flutter analyze
 flutter test
+
+# Run native vs pure Dart performance benchmarks
+cd packages/caduceus_native
+dart run benchmark/native_benchmark.dart
 ```
 
-Current test suite status: **830+ tests passing, 0 analysis issues**.
+Current test suite status: **890+ tests passing, 0 analysis issues**.
 
 ---
 

@@ -9,6 +9,9 @@ environment:
 dependencies:
   cryptography: ^2.7.0
   meta: ^1.15.0
+  web_socket_channel: ^3.0.1
+  caduceus_native:
+    path: ../caduceus_native
 
 dev_dependencies:
   lints: ^5.0.0

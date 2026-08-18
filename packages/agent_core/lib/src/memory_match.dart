@@ -9,6 +9,7 @@
 /// See `MEMORY_BRIDGE.md` §11, which asked this question and deferred it.
 library;
 
+import 'package:caduceus_native/caduceus_native.dart';
 import 'package:meta/meta.dart';
 
 import 'memory.dart';
@@ -64,6 +65,13 @@ class MemoryFingerprint {
 
   bool matches(MemoryFingerprint other) =>
       isUsable && other.isUsable && value == other.value;
+
+  /// Normalized string similarity in [0.0, 1.0] using native C Levenshtein engine.
+  double similarity(MemoryFingerprint other) {
+    if (!isUsable || !other.isUsable) return 0.0;
+    if (value == other.value) return 1.0;
+    return VectorNative.stringSimilarity(value, other.value) ?? 0.0;
+  }
 
   @override
   bool operator ==(Object other) =>

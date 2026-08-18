@@ -41,13 +41,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  caduceus_native:
-    dependency: "direct main"
-    description:
-      path: "../caduceus_native"
-      relative: true
-    source: path
-    version: "0.1.0"
   cli_config:
     dependency: transitive
     description:
@@ -81,7 +74,7 @@ packages:
     source: hosted
     version: "1.15.1"
   crypto:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: crypto
       sha256: c8ea0233063ba03258fbcf2ca4d6dadfefe14f02fab57702265467a19f27fadf
@@ -89,7 +82,7 @@ packages:
     source: hosted
     version: "3.0.7"
   ffi:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: ffi
       sha256: "6d7fd89431262d8f3125e81b50d3847a091d846eafcd4fdb88dd06f36d705a45"

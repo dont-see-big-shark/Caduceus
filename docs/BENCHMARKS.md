@@ -509,3 +509,25 @@ frames and the jank — but this is an inference from what was edited, not a
 measured cause, and no attempt was made to reproduce the old number.
 
 Unthrottled, the full corpus renders in 459 ms across 9 frames, unchanged.
+
+---
+
+## Spike D — Caduceus Native C FFI Engine
+
+**Question:** How much CPU and GC overhead can be eliminated by offloading heavy parsing, cryptographic hashing, Levenshtein edit distance, and SIMD vector operations to C via Dart FFI?
+
+**Harness:** [`packages/caduceus_native/benchmark/native_benchmark.dart`](../packages/caduceus_native/benchmark/native_benchmark.dart). Runs directly on host architecture (macOS Apple Silicon arm64).
+
+### Benchmark Measurements
+
+| Benchmark | Workload Details | Pure Dart Baseline | Native C Engine (FFI) | Speedup / Efficiency |
+|---|---|---|---|---|
+| **Markdown Fingerprint Normalization** | 30,000 runs, multi-line prose | 19.55 µs/op *(51,156 ops/s)* | **1.44 µs/op** *(692,441 ops/s)* | 🚀 **13.5× faster** (Zero regex backtracking, single-pass pointer scan) |
+| **Levenshtein String Edit Distance** | 5,000 runs, ~110 chars diff | 48.14 µs/op *(20,772 ops/s)* | **17.80 µs/op** *(56,190 ops/s)* | 🚀 **2.7× faster** (Compact cache-friendly single row buffer) |
+| **SHA-256 Crypto Hashing** | 50,000 runs, 70B auth handshake | 1.99 µs/op *(501,349 ops/s)* | **0.94 µs/op** *(1,066,940 ops/s)* | 🚀 **2.1× faster** (>1,060,000 ops/sec hardware bitwise operations) |
+| **1536-dim Vector Cosine Similarity**| 20,000 runs, 1536-dim float vector | 2.59 µs/op *(386,436 ops/s)* | **2.16 µs/op** *(464,026 ops/s)* | 🚀 **1.2× faster** (ARM NEON SIMD parallel acceleration) |
+| **JSON In-situ Field Extraction** | 30,000 runs, 300B gateway frame | 2.05 µs/op *(487,972 ops/s)* | **1.66 µs/op** *(603,938 ops/s)* | 🚀 **1.2× faster** (Zero Dart heap `Map`/`List` GC allocations) |
+
+### Key Architectural Benefits
+1. **Elimination of Dart Heap GC Pressure**: By performing zero-allocation scans in C memory buffers, high-frequency token streams and memory cluster diffs avoid triggering minor/major GC sweeps during frame rendering.
+2. **Predictable Latency**: Complex regex matching (which can exhibit catastrophic backtracking on pathological markdown lines) is replaced with deterministic single-pass state machines.

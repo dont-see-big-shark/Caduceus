@@ -8,6 +8,8 @@ environment:
 
 dependencies:
   meta: ^1.15.0
+  caduceus_native:
+    path: ../caduceus_native
 
 dev_dependencies:
   lints: ^5.0.0

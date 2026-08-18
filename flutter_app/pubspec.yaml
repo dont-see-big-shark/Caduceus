@@ -39,6 +39,8 @@ dependencies:
     path: ../packages/openclaw_protocol
   streaming_markdown:
     path: ../packages/streaming_markdown
+  caduceus_native:
+    path: ../packages/caduceus_native
 
   # macOS Keychain for the session token. Never SharedPreferences — that is a
   # plaintext plist, and the token grants full control-plane access.

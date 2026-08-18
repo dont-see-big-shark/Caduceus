@@ -17,7 +17,9 @@
 library;
 
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:caduceus_native/caduceus_native.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:meta/meta.dart';
 
@@ -52,8 +54,13 @@ class ClawDeviceIdentity {
   static Future<ClawDeviceIdentity> fromKeyPair(SimpleKeyPair keyPair) async {
     final publicKey = await keyPair.extractPublicKey();
     final raw = publicKey.bytes;
+    final nativeHash = CryptoNative.sha256(Uint8List.fromList(raw));
+    final deviceId = nativeHash != null
+        ? _hex(nativeHash)
+        : _hex((await Sha256().hash(raw)).bytes);
+
     return ClawDeviceIdentity(
-      deviceId: _hex((await Sha256().hash(raw)).bytes),
+      deviceId: deviceId,
       publicKey: base64UrlUnpadded(raw),
       keyPair: keyPair,
     );

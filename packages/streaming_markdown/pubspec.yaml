@@ -13,6 +13,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_markdown_plus: ^1.0.0
+  caduceus_native:
+    path: ../caduceus_native
 
 dev_dependencies:
   flutter_test:

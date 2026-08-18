@@ -10,6 +10,7 @@ import 'agent_shell.dart';
 import 'design/theme.dart';
 import 'design/tokens.dart';
 import 'l10n/app_localizations.dart';
+import 'media_cache_manager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,8 +26,7 @@ class _MemoryObserver with WidgetsBindingObserver {
 
   @override
   void didHaveMemoryPressure() {
-    PaintingBinding.instance.imageCache.clear();
-    PaintingBinding.instance.imageCache.clearLiveImages();
+    MediaCacheManager.instance.evictAll();
   }
 }
 
