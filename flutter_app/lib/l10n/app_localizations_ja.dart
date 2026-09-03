@@ -701,4 +701,28 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get composerSuggestionRelease => 'リリースノートを書く';
+
+  @override
+  String get authMethod => '認証方式';
+
+  @override
+  String get authModeToken => 'トークン (Token)';
+
+  @override
+  String get authModeOAuth => 'アカウント (OAuth)';
+
+  @override
+  String get username => 'ユーザー名';
+
+  @override
+  String get password => 'パスワード';
+
+  @override
+  String get loggingIn => 'ログイン中…';
+
+  @override
+  String get oauthLoginFailed => 'OAuth ログイン失敗';
+
+  @override
+  String get oauthEmptyCredentials => 'ユーザー名とパスワードを入力してください。';
 }

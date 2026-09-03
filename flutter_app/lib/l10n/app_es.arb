@@ -221,5 +221,13 @@
   "noCredential": "sin credenciales",
   "composerSuggestionResume": "Continuar la última tarea",
   "composerSuggestionStatus": "Comprobar la sesión actual",
-  "composerSuggestionRelease": "Escribir una nota de la versión"
+  "composerSuggestionRelease": "Escribir una nota de la versión",
+  "authMethod": "Método de autenticación",
+  "authModeToken": "Token",
+  "authModeOAuth": "Cuenta (OAuth)",
+  "username": "Usuario",
+  "password": "Contraseña",
+  "loggingIn": "Iniciando sesión…",
+  "oauthLoginFailed": "Error de inicio de sesión OAuth",
+  "oauthEmptyCredentials": "Por favor ingrese usuario y contraseña."
 }

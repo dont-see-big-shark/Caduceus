@@ -700,6 +700,30 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get composerSuggestionRelease => '写一条发布说明';
+
+  @override
+  String get authMethod => '认证方式';
+
+  @override
+  String get authModeToken => '令牌 (Token)';
+
+  @override
+  String get authModeOAuth => '账号密码 (OAuth)';
+
+  @override
+  String get username => '用户名';
+
+  @override
+  String get password => '密码';
+
+  @override
+  String get loggingIn => '正在登录…';
+
+  @override
+  String get oauthLoginFailed => 'OAuth 登录失败';
+
+  @override
+  String get oauthEmptyCredentials => '请输入用户名和密码。';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -1398,4 +1422,28 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get composerSuggestionRelease => '寫一則發行說明';
+
+  @override
+  String get authMethod => '認證方式';
+
+  @override
+  String get authModeToken => '權杖 (Token)';
+
+  @override
+  String get authModeOAuth => '帳號密碼 (OAuth)';
+
+  @override
+  String get username => '使用者名稱';
+
+  @override
+  String get password => '密碼';
+
+  @override
+  String get loggingIn => '正在登入…';
+
+  @override
+  String get oauthLoginFailed => 'OAuth 登入失敗';
+
+  @override
+  String get oauthEmptyCredentials => '請輸入使用者名稱和密碼。';
 }

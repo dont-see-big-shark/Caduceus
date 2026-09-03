@@ -34,8 +34,9 @@ class BuiltBackend {
 /// in hand before it happens.
 Future<BuiltBackend> buildBackend(
   SavedConnection connection,
-  String token,
-) async {
+  String token, {
+  HermesOAuthClient? oauthClient,
+}) async {
   if (connection.backendId == SavedConnection.openclaw) {
     // The identity is per saved connection, so approving this device on one
     // gateway says nothing about any other, and forgetting a server takes its
@@ -60,8 +61,22 @@ Future<BuiltBackend> buildBackend(
       ),
     );
   }
+
+  final isGated = connection.isOAuth || token.startsWith('eyJ');
+  final endpoint = HermesEndpoint.parse(
+    connection.url,
+    credential: token,
+    authMode: isGated
+        ? GatewayAuthMode.gatedTicket
+        : GatewayAuthMode.loopbackToken,
+  );
+  final client = oauthClient ?? HermesOAuthClient();
   final gateway = HermesGateway(
-    HermesEndpoint.parse(connection.url, credential: token),
+    endpoint,
+    refreshCredential: isGated
+        ? () =>
+              client.mintWsTicket(serverUrl: connection.url, accessToken: token)
+        : null,
   );
   return BuiltBackend(
     backend: HermesBackend(gateway, profile: connection.profile),

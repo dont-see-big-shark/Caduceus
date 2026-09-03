@@ -19,4 +19,5 @@ export 'src/events_types.dart';
 export 'src/gateway_client.dart';
 export 'src/jsonrpc.dart';
 export 'src/models.dart';
+export 'src/oauth.dart';
 export 'src/transport.dart';

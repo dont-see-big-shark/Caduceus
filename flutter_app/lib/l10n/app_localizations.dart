@@ -1434,6 +1434,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Write a release note'**
   String get composerSuggestionRelease;
+
+  /// No description provided for @authMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Auth Method'**
+  String get authMethod;
+
+  /// No description provided for @authModeToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Token'**
+  String get authModeToken;
+
+  /// No description provided for @authModeOAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'Account (OAuth)'**
+  String get authModeOAuth;
+
+  /// No description provided for @username.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get username;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @loggingIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in…'**
+  String get loggingIn;
+
+  /// No description provided for @oauthLoginFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'OAuth login failed'**
+  String get oauthLoginFailed;
+
+  /// No description provided for @oauthEmptyCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter both username and password.'**
+  String get oauthEmptyCredentials;
 }
 
 class _AppLocalizationsDelegate

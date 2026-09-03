@@ -236,5 +236,13 @@
   },
   "composerSuggestionResume": "Continue the last task",
   "composerSuggestionStatus": "Check the current session",
-  "composerSuggestionRelease": "Write a release note"
+  "composerSuggestionRelease": "Write a release note",
+  "authMethod": "Auth Method",
+  "authModeToken": "Token",
+  "authModeOAuth": "Account (OAuth)",
+  "username": "Username",
+  "password": "Password",
+  "loggingIn": "Signing in…",
+  "oauthLoginFailed": "OAuth login failed",
+  "oauthEmptyCredentials": "Please enter both username and password."
 }

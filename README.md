@@ -55,7 +55,7 @@ If you drive an agent from your phone on the go and from a workstation at your d
   - [x] **macOS**: Liquid Glass 3-column workspace, PanelRail, ⌘K command overlay, shader effects, Apple Silicon optimizations
   - [x] **iOS**: Adaptive phone layout, bottom-nav (Sessions / Panels / Connect / Settings), swipeable sheets, Keychain security
 - [x] **2. Multi-Agent Gateway Support**
-  - [x] **Hermes Agent**: Complete control plane (`tui_gateway` JSON-RPC over WebSocket) & data plane integration
+  - [x] **Hermes Agent**: Complete control plane (`tui_gateway` JSON-RPC over WebSocket) & data plane integration, supporting direct session token and OAuth 2.0 username/password authentication
   - [x] **OpenClaw**: Gateway pairing, Ed25519 identity handshake, session subscriptions, live reasoning streams & tool calls
   - [x] Capability gating architecture with 26+ discrete capabilities
 - [ ] **3. Extended Agent Harnesses**

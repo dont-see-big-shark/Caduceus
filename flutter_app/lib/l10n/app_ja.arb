@@ -221,5 +221,13 @@
   "noCredential": "資格情報なし",
   "composerSuggestionResume": "前回のタスクを続ける",
   "composerSuggestionStatus": "現在のセッションを確認",
-  "composerSuggestionRelease": "リリースノートを書く"
+  "composerSuggestionRelease": "リリースノートを書く",
+  "authMethod": "認証方式",
+  "authModeToken": "トークン (Token)",
+  "authModeOAuth": "アカウント (OAuth)",
+  "username": "ユーザー名",
+  "password": "パスワード",
+  "loggingIn": "ログイン中…",
+  "oauthLoginFailed": "OAuth ログイン失敗",
+  "oauthEmptyCredentials": "ユーザー名とパスワードを入力してください。"
 }

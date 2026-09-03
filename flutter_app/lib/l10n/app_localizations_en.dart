@@ -713,4 +713,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get composerSuggestionRelease => 'Write a release note';
+
+  @override
+  String get authMethod => 'Auth Method';
+
+  @override
+  String get authModeToken => 'Token';
+
+  @override
+  String get authModeOAuth => 'Account (OAuth)';
+
+  @override
+  String get username => 'Username';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get loggingIn => 'Signing in…';
+
+  @override
+  String get oauthLoginFailed => 'OAuth login failed';
+
+  @override
+  String get oauthEmptyCredentials =>
+      'Please enter both username and password.';
 }

@@ -37,8 +37,7 @@ class HermesEndpoint {
     required String token,
     int port = 9119,
     String host = '127.0.0.1',
-  }) =>
-      HermesEndpoint(host: host, port: port, credential: token);
+  }) => HermesEndpoint(host: host, port: port, credential: token);
 
   /// Parses the URL a user actually has in hand, e.g. what a reverse proxy or
   /// tunnel service hands out:
@@ -48,7 +47,11 @@ class HermesEndpoint {
   /// Everything after the authority is kept as [pathPrefix] and prepended to
   /// every route, because a proxy that mounts Hermes under a subpath expects
   /// `/<prefix>/api/ws`, not `/api/ws`.
-  factory HermesEndpoint.parse(String url, {required String credential}) {
+  factory HermesEndpoint.parse(
+    String url, {
+    required String credential,
+    GatewayAuthMode authMode = GatewayAuthMode.loopbackToken,
+  }) {
     var text = url.trim();
     if (!text.contains('://')) text = 'https://$text';
     final uri = Uri.parse(text);
@@ -57,6 +60,7 @@ class HermesEndpoint {
       host: uri.host,
       port: uri.hasPort ? uri.port : (secure ? 443 : 80),
       credential: credential,
+      authMode: authMode,
       secure: secure,
       pathPrefix: uri.path,
     );
@@ -138,13 +142,13 @@ class HermesEndpoint {
   bool get credentialIsSingleUse => authMode == GatewayAuthMode.gatedTicket;
 
   HermesEndpoint withCredential(String credential) => HermesEndpoint(
-        host: host,
-        port: port,
-        credential: credential,
-        authMode: authMode,
-        secure: secure,
-        pathPrefix: pathPrefix,
-      );
+    host: host,
+    port: port,
+    credential: credential,
+    authMode: authMode,
+    secure: secure,
+    pathPrefix: pathPrefix,
+  );
 
   /// Never includes the credential — this is safe to log.
   @override

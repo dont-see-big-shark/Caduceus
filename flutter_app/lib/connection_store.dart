@@ -16,6 +16,7 @@ class SavedConnection {
     this.backendId = hermes,
     this.requestAdmin = false,
     this.profile = 'default',
+    this.authMode = 'token',
   });
 
   /// Backend ids, matching [AgentBackend.id].
@@ -37,11 +38,15 @@ class SavedConnection {
             json['backend'] as String? ?? backendForUrl(json['url'] as String?),
         requestAdmin: json['requestAdmin'] == true,
         profile: json['profile'] as String? ?? 'default',
+        authMode: json['authMode'] as String? ?? 'token',
       );
 
   final String id;
   final String label;
   final String url;
+  final String authMode;
+
+  bool get isOAuth => authMode == 'oauth';
 
   /// Which agent is at the other end. See [AgentBackend.id].
   final String backendId;
@@ -84,15 +89,19 @@ class SavedConnection {
     _ => backendId,
   };
 
-  SavedConnection copyWith({bool? requestAdmin, String? profile}) =>
-      SavedConnection(
-        id: id,
-        label: label,
-        url: url,
-        backendId: backendId,
-        requestAdmin: requestAdmin ?? this.requestAdmin,
-        profile: profile ?? this.profile,
-      );
+  SavedConnection copyWith({
+    bool? requestAdmin,
+    String? profile,
+    String? authMode,
+  }) => SavedConnection(
+    id: id,
+    label: label,
+    url: url,
+    backendId: backendId,
+    requestAdmin: requestAdmin ?? this.requestAdmin,
+    profile: profile ?? this.profile,
+    authMode: authMode ?? this.authMode,
+  );
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -102,6 +111,8 @@ class SavedConnection {
     if (requestAdmin) 'requestAdmin': true,
     if (profile.trim().isNotEmpty && profile.trim() != 'default')
       'profile': profile.trim(),
+    if (authMode.trim().isNotEmpty && authMode.trim() != 'token')
+      'authMode': authMode.trim(),
   };
 
   String get displayLabel {
@@ -222,6 +233,7 @@ class ConnectionStore {
     String backendId = SavedConnection.hermes,
     bool requestAdmin = false,
     String profile = 'default',
+    String authMode = 'token',
   }) async {
     final connections = List<SavedConnection>.from(await list());
     // Identify by URL so reconnecting to a known server updates rather than
@@ -255,6 +267,7 @@ class ConnectionStore {
       backendId: backendId,
       requestAdmin: requestAdmin,
       profile: profile.trim().isEmpty ? 'default' : profile.trim(),
+      authMode: authMode,
     );
     connections.removeWhere((c) => c.id == resolvedId);
     connections.insert(0, entry);

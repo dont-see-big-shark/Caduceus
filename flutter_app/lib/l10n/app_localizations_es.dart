@@ -713,4 +713,28 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get composerSuggestionRelease => 'Escribir una nota de la versión';
+
+  @override
+  String get authMethod => 'Método de autenticación';
+
+  @override
+  String get authModeToken => 'Token';
+
+  @override
+  String get authModeOAuth => 'Cuenta (OAuth)';
+
+  @override
+  String get username => 'Usuario';
+
+  @override
+  String get password => 'Contraseña';
+
+  @override
+  String get loggingIn => 'Iniciando sesión…';
+
+  @override
+  String get oauthLoginFailed => 'Error de inicio de sesión OAuth';
+
+  @override
+  String get oauthEmptyCredentials => 'Por favor ingrese usuario y contraseña.';
 }

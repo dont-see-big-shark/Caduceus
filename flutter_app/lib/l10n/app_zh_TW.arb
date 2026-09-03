@@ -221,5 +221,13 @@
   "noCredential": "無憑證",
   "composerSuggestionResume": "繼續上次的任務",
   "composerSuggestionStatus": "檢查目前工作階段狀態",
-  "composerSuggestionRelease": "寫一則發行說明"
+  "composerSuggestionRelease": "寫一則發行說明",
+  "authMethod": "認證方式",
+  "authModeToken": "權杖 (Token)",
+  "authModeOAuth": "帳號密碼 (OAuth)",
+  "username": "使用者名稱",
+  "password": "密碼",
+  "loggingIn": "正在登入…",
+  "oauthLoginFailed": "OAuth 登入失敗",
+  "oauthEmptyCredentials": "請輸入使用者名稱和密碼。"
 }

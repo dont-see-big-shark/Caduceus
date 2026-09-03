@@ -2,11 +2,7 @@ import 'package:agent_core/agent_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hermes_protocol/hermes_protocol.dart';
-import 'package:openclaw_protocol/openclaw_protocol.dart';
-
-import 'backends/claw_backend.dart';
 import 'backends/claw_identity.dart';
-import 'backends/hermes_backend.dart';
 import 'connection_store.dart';
 import 'design/components.dart';
 import 'design/glass.dart';
@@ -15,6 +11,7 @@ import 'design/theme.dart';
 import 'design/tokens.dart';
 import 'l10n/app_localizations.dart';
 import 'agent_tabs.dart';
+import 'backend_factory.dart';
 import 'startup_presets.dart';
 import 'workspace.dart';
 import 'workspace_screen.dart';
@@ -32,6 +29,8 @@ class ConnectScreen extends StatefulWidget {
     this.autoReconnect = true,
     this.alreadyOpen = const {},
     this.onFocusExisting,
+    this.oauthClient,
+    this.backendBuilder,
     super.key,
   });
 
@@ -41,6 +40,13 @@ class ConnectScreen extends StatefulWidget {
   /// second socket to a server this app is already talking to, and on
   /// OpenClaw a second device pairing needing a second human approval.
   final Set<String> alreadyOpen;
+
+  /// Optional injected OAuth client for Hermes login (used for testing or custom endpoints).
+  final HermesOAuthClient? oauthClient;
+
+  /// Optional injected backend factory (used for testing without real network).
+  final Future<BuiltBackend> Function(SavedConnection connection, String token)?
+  backendBuilder;
 
   /// Called instead of connecting when an already-open server is tapped.
   ///
@@ -72,11 +78,16 @@ class ConnectScreen extends StatefulWidget {
   State<ConnectScreen> createState() => _ConnectScreenState();
 }
 
+enum _HermesAuthMode { token, oauth }
+
 class _ConnectScreenState extends State<ConnectScreen> {
   final _store = ConnectionStore();
   final _url = TextEditingController();
   final _label = TextEditingController();
   final _token = TextEditingController();
+  final _username = TextEditingController();
+  final _password = TextEditingController();
+  _HermesAuthMode _hermesAuth = _HermesAuthMode.token;
 
   List<SavedConnection> _saved = const [];
   bool _busy = false;
@@ -168,6 +179,8 @@ class _ConnectScreenState extends State<ConnectScreen> {
             token,
             id: lastId,
             backendId: match.first.backendId,
+            requestAdmin: match.first.requestAdmin,
+            authMode: match.first.authMode,
           );
           return;
         }
@@ -184,6 +197,8 @@ class _ConnectScreenState extends State<ConnectScreen> {
     _url.dispose();
     _label.dispose();
     _token.dispose();
+    _username.dispose();
+    _password.dispose();
     super.dispose();
   }
 
@@ -196,6 +211,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
     String? label,
     String backendId = SavedConnection.hermes,
     bool requestAdmin = false,
+    String authMode = 'token',
   }) async {
     setState(() {
       _busy = true;
@@ -217,6 +233,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
       token: token,
       backendId: backendId,
       requestAdmin: requestAdmin,
+      authMode: authMode,
     );
 
     final AgentBackend backend;
@@ -226,17 +243,19 @@ class _ConnectScreenState extends State<ConnectScreen> {
     var handedOver = false;
     HermesEndpoint? endpoint;
     try {
-      if (backendId == SavedConnection.openclaw) {
-        backend = await _clawBackend(
-          entry.id,
-          url,
-          token,
-          requestAdmin: requestAdmin,
-        );
+      if (widget.backendBuilder != null) {
+        final built = await widget.backendBuilder!(entry, token);
+        backend = built.backend;
+        gateway = built.gateway;
       } else {
-        endpoint = HermesEndpoint.parse(url, credential: token);
-        gateway = HermesGateway(endpoint);
-        backend = HermesBackend(gateway, profile: entry.profile);
+        final built = await buildBackend(
+          entry,
+          token,
+          oauthClient: widget.oauthClient,
+        );
+        backend = built.backend;
+        gateway = built.gateway;
+        if (gateway != null) endpoint = gateway.endpoint;
       }
     } catch (e) {
       if (mounted) {
@@ -407,31 +426,6 @@ class _ConnectScreenState extends State<ConnectScreen> {
     }
   }
 
-  /// An OpenClaw backend for a saved server, with that server's own key.
-  ///
-  /// The identity is per saved connection, so approving this device on one
-  /// gateway says nothing about any other, and forgetting a server takes its
-  /// key with it.
-  Future<AgentBackend> _clawBackend(
-    String connectionId,
-    String url,
-    String token, {
-    bool requestAdmin = false,
-  }) async {
-    final identity = await ClawIdentityStore().identityFor(connectionId);
-    return ClawBackend(
-      ClawGateway(
-        ClawEndpoint(url: Uri.parse(url), token: token),
-        identity: identity,
-        // Least privilege unless the person asked for writes. adminScopes
-        // lets the shared memory base write MEMORY.md; on this gateway the
-        // auth token is already the administrator credential, so a request
-        // for admin is granted — but the client must still ask.
-        scopes: requestAdmin ? ClawGateway.adminScopes : ClawGateway.chatScopes,
-      ),
-    );
-  }
-
   /// What to show when a connect failed and there is no diagnosis to run.
   static String _connectMessage(Object error) => switch (error) {
     AgentException(:final detail) when detail.isNotEmpty => detail,
@@ -456,6 +450,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
       id: c.id,
       backendId: c.backendId,
       requestAdmin: c.requestAdmin,
+      authMode: c.authMode,
     );
   }
 
@@ -669,6 +664,24 @@ class _ConnectScreenState extends State<ConnectScreen> {
             },
           ),
         ] else ...[
+          if (!_isClaw) ...[
+            const SizedBox(height: 14),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Segmented(
+                labels: [
+                  l10n?.authModeToken ?? 'Token',
+                  l10n?.authModeOAuth ?? 'Account (OAuth)',
+                ],
+                index: _hermesAuth == _HermesAuthMode.oauth ? 1 : 0,
+                onChanged: (i) => setState(
+                  () => _hermesAuth = i == 1
+                      ? _HermesAuthMode.oauth
+                      : _HermesAuthMode.token,
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 16),
           _Field(
             controller: _label,
@@ -682,18 +695,36 @@ class _ConnectScreenState extends State<ConnectScreen> {
             machine: true,
           ),
           const SizedBox(height: 12),
-          _Field(
-            controller: _token,
-            label: _isClaw
-                ? (l10n?.gatewayToken ?? 'Gateway token')
-                : (l10n?.sessionToken ?? 'Session token'),
-            help: _isClaw
-                ? 'gateway.auth.token · stored in the Keychain'
-                : 'HERMES_DASHBOARD_SESSION_TOKEN · stored in the Keychain',
-            obscure: true,
-            machine: true,
-            onSubmitted: _submitForm,
-          ),
+          if (_isClaw || _hermesAuth == _HermesAuthMode.token)
+            _Field(
+              controller: _token,
+              label: _isClaw
+                  ? (l10n?.gatewayToken ?? 'Gateway token')
+                  : (l10n?.sessionToken ?? 'Session token'),
+              help: _isClaw
+                  ? 'gateway.auth.token · stored in the Keychain'
+                  : 'HERMES_DASHBOARD_SESSION_TOKEN · stored in the Keychain',
+              obscure: true,
+              machine: true,
+              onSubmitted: _submitForm,
+            )
+          else ...[
+            _Field(
+              controller: _username,
+              label: l10n?.username ?? 'Username',
+              help: 'OAuth account username or email',
+              machine: true,
+            ),
+            const SizedBox(height: 12),
+            _Field(
+              controller: _password,
+              label: l10n?.password ?? 'Password',
+              help: 'OAuth account password',
+              obscure: true,
+              machine: true,
+              onSubmitted: _submitForm,
+            ),
+          ],
           if (_isClaw) ...[
             const SizedBox(height: 12),
             Text(
@@ -737,10 +768,57 @@ class _ConnectScreenState extends State<ConnectScreen> {
 
   bool get _isClaw => _backendId == SavedConnection.openclaw;
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     final url = _url.text.trim();
+    if (url.isEmpty) return;
+
+    if (!_isClaw && _hermesAuth == _HermesAuthMode.oauth) {
+      final user = _username.text.trim();
+      final pass = _password.text;
+      if (user.isEmpty || pass.isEmpty) {
+        setState(() {
+          _workspaceError =
+              AppLocalizations.of(context)?.oauthEmptyCredentials ??
+              'Please enter both username and password.';
+        });
+        return;
+      }
+
+      setState(() {
+        _busy = true;
+        _morph = Morph.working;
+        _diagnosis = null;
+        _workspaceError = null;
+      });
+
+      try {
+        final client = widget.oauthClient ?? HermesOAuthClient();
+        final tokenObj = await client.login(
+          serverUrl: url,
+          username: user,
+          password: pass,
+        );
+        _token.text = tokenObj.accessToken;
+        await _connect(
+          url,
+          tokenObj.accessToken,
+          backendId: _backendId,
+          requestAdmin: _requestAdmin,
+          authMode: 'oauth',
+        );
+      } catch (e) {
+        if (!mounted) return;
+        setState(() {
+          _busy = false;
+          _morph = Morph.idle;
+          _workspaceError = e is HermesOAuthException ? e.message : '$e';
+        });
+      }
+      return;
+    }
+
     final token = _token.text.trim();
-    if (url.isEmpty || token.isEmpty) return;
+    if (token.isEmpty) return;
     _connect(url, token, backendId: _backendId, requestAdmin: _requestAdmin);
   }
 }
