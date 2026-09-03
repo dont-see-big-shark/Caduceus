@@ -36,7 +36,7 @@ class _Socket implements GatewayTransport {
   }
 }
 
-Future<void> hold(WidgetTester tester, [int seconds = 6]) async {
+Future<void> hold(WidgetTester tester, [int seconds = 1]) async {
   for (var i = 0; i < seconds * 20; i++) {
     await tester.pump(const Duration(milliseconds: 50));
   }
@@ -64,8 +64,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: caduceusTheme(mode),
-          builder: (context, child) =>
-              Aurora(child: child ?? const SizedBox()),
+          builder: (context, child) => Aurora(child: child ?? const SizedBox()),
           home: SettingsPage(workspace: workspace),
         ),
       );

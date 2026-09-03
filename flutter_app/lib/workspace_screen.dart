@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:agent_core/agent_core.dart';
@@ -1410,28 +1409,6 @@ class _CompactShell extends StatelessWidget {
               _openRailPanel(context, panel);
             },
           ),
-          // The design's `.bottomnav` is Android-only: on iOS the top bar
-          // and drawer carry the same destinations, and the shell stays a
-          // single edge-to-edge conversation surface.
-          bottomNavigationBar: defaultTargetPlatform == TargetPlatform.android
-              ? _BottomNav(
-                  // 面板 opens the design's capabilities sheet: Skills / Tools /
-                  // MCP / Browse Hub in one place.
-                  onPanels: () => showPanel<void>(
-                    context,
-                    (_) => CapabilitiesHub(
-                      workspace: workspace,
-                      sessionId: workspace.active?.persistedId ?? '',
-                    ),
-                  ),
-                  onConnect: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const ConnectScreen(autoReconnect: false),
-                    ),
-                  ),
-                  onSettings: onOpenSettings,
-                )
-              : null,
           body: Stack(
             children: [
               Positioned.fill(
@@ -1624,109 +1601,6 @@ extension on _CompactShell {
           onOpenSession: workspace.open,
         ),
       },
-    );
-  }
-}
-
-/// The mobile bottom navigation — the design's `bottom-nav`: 会话 /
-/// 面板 / 连接 / 设置 (Chat / Panels / Connect / Settings). Chat is the
-/// conversation itself; Panels opens the Capabilities Hub as a sheet;
-/// Connect and Settings open their full-screen destinations.
-class _BottomNav extends StatelessWidget {
-  const _BottomNav({
-    required this.onPanels,
-    required this.onConnect,
-    required this.onSettings,
-  });
-
-  final VoidCallback onPanels;
-  final VoidCallback onConnect;
-  final VoidCallback onSettings;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return GlassPanel(
-      level: Glass.regular,
-      radius: BorderRadius.zero,
-      child: SafeArea(
-        top: false,
-        child: SizedBox(
-          height: 56,
-          child: Row(
-            children: [
-              _NavItem(
-                icon: Icons.chat_bubble_outline_rounded,
-                label: l10n?.chat ?? 'Chat',
-                selected: true,
-                onTap: () {},
-              ),
-              _NavItem(
-                icon: Icons.grid_view_rounded,
-                label: l10n?.panels ?? 'Panels',
-                onTap: onPanels,
-              ),
-              _NavItem(
-                icon: Icons.wifi_tethering_rounded,
-                label: l10n?.connect ?? 'Connect',
-                onTap: onConnect,
-              ),
-              _NavItem(
-                icon: Icons.settings_outlined,
-                label: l10n?.settings ?? 'Settings',
-                onTap: onSettings,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  const _NavItem({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.selected = false,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final bool selected;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 19,
-              color: selected ? Palette.brass : context.ink.tertiary,
-            ),
-            const SizedBox(height: 2),
-            // Scales down under a large text scale so the row never
-            // overflows the nav height.
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                label,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: selected ? context.ink.primary : context.ink.faint,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

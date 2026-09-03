@@ -165,12 +165,28 @@ class _CaduceusAppState extends State<CaduceusApp> {
           // under its sheets. The old animated aurora was removed — it
           // repainted the whole surface every frame and stole the frame
           // budget from scrolling and streaming.
-          builder: (context, child) => ColoredBox(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Palette.voidBlack
-                : const Color(0xFFE4E7EF),
-            child: child ?? const SizedBox(),
-          ),
+          builder: (context, child) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
+            final overlay = SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: isDark
+                  ? Brightness.light
+                  : Brightness.dark,
+              statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+              systemNavigationBarColor: Colors.transparent,
+              systemNavigationBarDividerColor: Colors.transparent,
+              systemNavigationBarIconBrightness: isDark
+                  ? Brightness.light
+                  : Brightness.dark,
+            );
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: overlay,
+              child: ColoredBox(
+                color: isDark ? Palette.voidBlack : const Color(0xFFE4E7EF),
+                child: child ?? const SizedBox(),
+              ),
+            );
+          },
           home: kBench ? const BenchScreen() : const AgentShell(),
         ),
       ),

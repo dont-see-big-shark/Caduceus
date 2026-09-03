@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "dev.caduceus.caduceus"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

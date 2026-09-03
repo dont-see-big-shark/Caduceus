@@ -7,8 +7,6 @@ library;
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:caduceus/capabilities_hub.dart';
-import 'package:caduceus/connect_screen.dart';
 import 'package:caduceus/l10n/app_localizations.dart';
 import 'package:caduceus/workspace.dart';
 import 'package:caduceus/workspace_screen.dart';
@@ -91,97 +89,77 @@ Future<(Workspace, _Socket)> _open(
 }
 
 void main() {
-  testWidgets('the bottom nav is the design\'s 会话/面板/连接/设置', (tester) async {
-    await _open(tester);
+  testWidgets(
+    'Android has no bottom nav crowding conversation — edge-to-edge parity with iOS',
+    (tester) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      try {
+        await _open(tester);
 
-    expect(find.text('Chat'), findsOneWidget);
-    expect(find.text('Panels'), findsOneWidget);
-    expect(find.text('Connect'), findsOneWidget);
-    expect(find.text('Settings'), findsOneWidget);
-    // The first pass invented Journey / Workspace here; the design has no
-    // such items and neither may the app.
-    expect(find.text('Journey'), findsNothing);
-    expect(find.text('Workspace'), findsNothing);
-  });
+        // The conversation surface is edge-to-edge on Android:
+        // no bottom nav bar stealing height or colliding with the composer.
+        expect(find.text('Chat'), findsNothing);
+        expect(find.text('Panels'), findsNothing);
+        expect(find.text('Connect'), findsNothing);
+        expect(find.text('Settings'), findsNothing);
 
-  testWidgets('Panels opens the Capabilities Hub as a sheet', (tester) async {
-    final (workspace, socket) = await _open(tester);
+        // The session top bar provides the drawer entry point.
+        expect(find.byTooltip('Sessions'), findsOneWidget);
 
-    await tester.tap(find.text('Panels'));
-    await tester.pumpAndSettle();
-    // The hub asks the gateway as it opens; answer so the list settles.
-    socket.reply('skills.manage', {
-      'skills': {'read_file': 'Read a file from the workspace'},
-    });
-    socket.reply('tools.list', <Object>[]);
-    socket.reply('plugins.list', <Object>[]);
-    await tester.pumpAndSettle();
+        // The drawer carries all navigation destinations.
+        await tester.tap(find.byTooltip('Sessions'));
+        await tester.pumpAndSettle();
+        expect(find.text('New session'), findsOneWidget);
+        expect(find.text('Search sessions'), findsOneWidget);
+        expect(find.text('Sessions'), findsWidgets);
+        expect(find.text('Tools'), findsOneWidget);
+        expect(find.text('Shared'), findsOneWidget);
+        expect(find.text('Settings'), findsWidgets);
+      } finally {
+        debugDefaultTargetPlatformOverride = null;
+      }
+    },
+  );
 
-    expect(find.byType(CapabilitiesHub), findsOneWidget);
-    // Tab labels carry live counts ('Skills · 1'), so match on the stem.
-    expect(find.textContaining('Skills'), findsWidgets);
-    expect(find.textContaining('Tools'), findsWidgets);
-    expect(find.textContaining('MCP'), findsWidgets);
-    expect(find.text('Browse Hub'), findsOneWidget);
-  });
+  testWidgets(
+    'iOS has no bottom nav crowding conversation — top bar and drawer carry it',
+    (tester) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      try {
+        await _open(tester);
 
-  testWidgets('Connect pushes the connect screen', (tester) async {
-    await _open(tester);
+        expect(find.text('Chat'), findsNothing);
+        expect(find.text('Panels'), findsNothing);
+        expect(find.text('Connect'), findsNothing);
+        expect(find.text('Settings'), findsNothing);
 
-    await tester.tap(find.text('Connect'));
-    await tester.pumpAndSettle();
+        expect(find.byTooltip('Sessions'), findsOneWidget);
 
-    expect(find.byType(ConnectScreen), findsOneWidget);
-  });
+        await tester.tap(find.byTooltip('Sessions'));
+        await tester.pumpAndSettle();
+        expect(find.text('New session'), findsOneWidget);
+        expect(find.text('Search sessions'), findsOneWidget);
+      } finally {
+        debugDefaultTargetPlatformOverride = null;
+      }
+    },
+  );
 
-  testWidgets('Settings opens the settings overlay', (tester) async {
-    await _open(tester);
-
-    await tester.tap(find.text('Settings'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Settings'), findsWidgets);
-    // The design's settings-nav opens with the CORE group.
-    expect(find.text('Model'), findsOneWidget);
-  });
-
-  testWidgets('the zh locale renders the design\'s Chinese chrome', (
-    tester,
-  ) async {
+  testWidgets('the zh locale renders Chinese chrome in drawer', (tester) async {
     await _open(tester, locale: const Locale('zh'));
 
-    // Bottom nav: 会话 / 面板 / 连接 / 设置 — the design's locked copy.
-    expect(find.text('会话'), findsOneWidget);
-    expect(find.text('面板'), findsWidgets);
-    expect(find.text('连接'), findsOneWidget);
-    expect(find.text('设置'), findsWidgets);
+    // The session top bar gives a way in with localized tooltip.
+    expect(find.byTooltip('会话'), findsOneWidget);
 
-    // Drawer segments: 会话 / 面板 / 设置.
+    // Drawer segments: 会话 / 工具 / 共享 / 设置.
     await tester.tap(find.byTooltip('会话'));
     await tester.pumpAndSettle();
     expect(find.text('新建会话'), findsOneWidget);
     expect(find.text('搜索会话'), findsOneWidget);
-  });
-
-  testWidgets('iOS has no bottom nav — the top bar and drawer carry it', (
-    tester,
-  ) async {
-    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
-    try {
-      await _open(tester);
-
-      // The design's `.bottomnav` is Android-only. On iOS these labels belong
-      // to the top bar and drawer instead.
-      expect(find.text('Chat'), findsNothing);
-      expect(find.text('Panels'), findsNothing);
-      expect(find.text('Connect'), findsNothing);
-      expect(find.text('Settings'), findsNothing);
-
-      // The session top bar still gives a way in.
-      expect(find.byTooltip('Sessions'), findsOneWidget);
-    } finally {
-      debugDefaultTargetPlatformOverride = null;
-    }
+    expect(find.text('会话'), findsWidgets);
+    expect(find.text('工具'), findsOneWidget);
+    expect(find.text('共享'), findsOneWidget);
+    expect(find.text('设置'), findsWidgets);
   });
 }
 

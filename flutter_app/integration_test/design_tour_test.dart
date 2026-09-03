@@ -93,7 +93,7 @@ const _sessions = {
 };
 
 /// Long enough for a screenshot taken from another shell to land inside it.
-const _hold = Duration(seconds: 6);
+const _hold = Duration(milliseconds: 600);
 
 /// Holds a surface on screen, pumping the whole time.
 ///
@@ -210,7 +210,12 @@ void main() {
       expect(find.text('New session'), findsOneWidget);
       await hold(tester);
 
-      await tester.tapAt(const Offset(360, 400));
+      final closeFinder = find.byTooltip('Close');
+      if (closeFinder.evaluate().isNotEmpty) {
+        await tester.tap(closeFinder.first);
+      } else {
+        await tester.tapAt(const Offset(360, 400));
+      }
       await tester.pump(const Duration(milliseconds: 400));
 
       // 4 — the command palette, on the thickest glass in the system.
@@ -236,6 +241,8 @@ void main() {
       // so a phone and a Mac present one action surface.
       await tester.enterText(find.byType(TextField).first, '');
       await tester.pump(const Duration(milliseconds: 200));
+      await tester.tapAt(const Offset(200, 300));
+      await tester.pump(const Duration(milliseconds: 300));
       await tester.tap(find.byTooltip('Session actions'));
       await tester.pump(const Duration(milliseconds: 400));
       expect(find.text('Copy transcript'), findsOneWidget);

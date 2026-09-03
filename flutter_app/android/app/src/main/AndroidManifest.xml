@@ -4,6 +4,9 @@
          no network access at all — every request fails while debug and profile
          work perfectly. This is the one mode that ships. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <!-- Reaching a Hermes over a plain-http tunnel (ssh -L, or a LAN box with
          no TLS) is a normal deployment, and Android blocks cleartext by default
@@ -11,7 +14,7 @@
          config rather than a blanket usesCleartextTraffic=true. -->
     <application
         android:networkSecurityConfig="@xml/network_security_config"
-        android:label="caduceus"
+        android:label="Caduceus"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -51,6 +54,9 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
         </intent>
     </queries>
 </manifest>
