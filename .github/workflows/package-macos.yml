@@ -6,6 +6,7 @@ on:
       - 'alpha-*'
       - 'beta-*'
       - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write

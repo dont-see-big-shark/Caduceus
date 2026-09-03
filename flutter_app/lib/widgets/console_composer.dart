@@ -598,6 +598,8 @@ class ConsoleComposerState extends State<ConsoleComposer> {
       bindings: {
         const SingleActivator(LogicalKeyboardKey.enter, meta: true):
             _handleSend,
+        const SingleActivator(LogicalKeyboardKey.enter, control: true):
+            _handleSend,
         const SingleActivator(LogicalKeyboardKey.escape): () =>
             _setCompletions(const []),
       },

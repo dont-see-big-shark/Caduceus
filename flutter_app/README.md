@@ -40,3 +40,30 @@ flutter run -d "iPhone 17 Pro"
 
 The launcher also creates the `Simulator.app` symlink that Flutter expects under
 the selected Xcode (`xcode-select -p`).
+
+## Android (Device & Emulator)
+
+Run on a connected Android device or running emulator:
+
+```bash
+# Debug run
+flutter run -d android
+
+# Build Release APK
+flutter build apk --release
+
+# Install to connected device
+adb install -r build/app/outputs/flutter-apk/app-release.apk
+```
+
+## Windows Desktop
+
+Run and build on Windows:
+
+```bash
+# Debug run
+flutter run -d windows
+
+# Build Release Desktop Binary
+flutter build windows --release
+```

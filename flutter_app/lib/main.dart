@@ -1,6 +1,7 @@
 /// Caduceus — a native client for Hermes Agent.
 library;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,6 +43,7 @@ final shortcutRequest = ValueNotifier<String?>(null);
 
 /// Handles the native menu bar's commands.
 void setupMacosChannel() {
+  if (defaultTargetPlatform != TargetPlatform.macOS) return;
   macosChannel.setMethodCallHandler((call) async {
     if (call.method == 'openSettings') {
       settingsRequest.value++;

@@ -178,6 +178,8 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
   /// holding.
   bool get _hasKeyboard =>
       Theme.of(context).platform == TargetPlatform.macOS ||
+      Theme.of(context).platform == TargetPlatform.windows ||
+      Theme.of(context).platform == TargetPlatform.linux ||
       MediaQuery.sizeOf(context).width >= _compactWidth;
 
   /// Opens settings as the design's `settings-overlay` — the shared shell
@@ -241,45 +243,81 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
   Widget build(BuildContext context) {
     return Shortcuts(
       shortcuts: const {
-        // ⌘N new session · ⌘R gentle reconnect · ⌘⇧R refresh the list ·
-        // ⌘J jobs · ⌘P projects · ⌘E focus session search ·
-        // ⌘↑ / ⌘↓ previous / next session · ⌘1–⌘5 nav ·
-        // ⌘⇧T toolsets · ⌘⇧P panels · ⌘⇧S settings · ⌘K palette (in console).
+        // ⌘N / Ctrl+N new session · ⌘R / Ctrl+R gentle reconnect · ⌘⇧R / Ctrl+Shift+R refresh ·
+        // ⌘J / Ctrl+J jobs · ⌘P / Ctrl+P projects · ⌘E / Ctrl+E focus session search ·
+        // ⌘↑ / Ctrl+↑ previous · ⌘↓ / Ctrl+↓ next session · ⌘1–⌘5 / Ctrl+1–Ctrl+5 nav ·
+        // ⌘⇧T / Ctrl+Shift+T toolsets · ⌘⇧P / Ctrl+Shift+P panels · ⌘⇧S / Ctrl+Shift+S settings · ⌘K / Ctrl+K palette.
         SingleActivator(LogicalKeyboardKey.keyN, meta: true):
+            _NewSessionIntent(),
+        SingleActivator(LogicalKeyboardKey.keyN, control: true):
             _NewSessionIntent(),
         SingleActivator(LogicalKeyboardKey.keyR, meta: true):
             _ReconnectIntent(),
+        SingleActivator(LogicalKeyboardKey.keyR, control: true):
+            _ReconnectIntent(),
         SingleActivator(LogicalKeyboardKey.keyR, meta: true, shift: true):
+            _RefreshIntent(),
+        SingleActivator(LogicalKeyboardKey.keyR, control: true, shift: true):
             _RefreshIntent(),
         SingleActivator(LogicalKeyboardKey.keyE, meta: true):
             _FocusSearchIntent(),
+        SingleActivator(LogicalKeyboardKey.keyE, control: true):
+            _FocusSearchIntent(),
         SingleActivator(LogicalKeyboardKey.arrowUp, meta: true):
+            _PreviousSessionIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowUp, control: true):
             _PreviousSessionIntent(),
         SingleActivator(LogicalKeyboardKey.arrowDown, meta: true):
             _NextSessionIntent(),
+        SingleActivator(LogicalKeyboardKey.arrowDown, control: true):
+            _NextSessionIntent(),
         SingleActivator(LogicalKeyboardKey.digit1, meta: true): _NavIntent(
+          _NavSection.capabilities,
+        ),
+        SingleActivator(LogicalKeyboardKey.digit1, control: true): _NavIntent(
           _NavSection.capabilities,
         ),
         SingleActivator(LogicalKeyboardKey.digit2, meta: true): _NavIntent(
           _NavSection.messaging,
         ),
+        SingleActivator(LogicalKeyboardKey.digit2, control: true): _NavIntent(
+          _NavSection.messaging,
+        ),
         SingleActivator(LogicalKeyboardKey.digit3, meta: true): _NavIntent(
+          _NavSection.artifacts,
+        ),
+        SingleActivator(LogicalKeyboardKey.digit3, control: true): _NavIntent(
           _NavSection.artifacts,
         ),
         SingleActivator(LogicalKeyboardKey.digit4, meta: true): _NavIntent(
           _NavSection.panels,
         ),
+        SingleActivator(LogicalKeyboardKey.digit4, control: true): _NavIntent(
+          _NavSection.panels,
+        ),
         SingleActivator(LogicalKeyboardKey.digit5, meta: true): _NavIntent(
+          _NavSection.settings,
+        ),
+        SingleActivator(LogicalKeyboardKey.digit5, control: true): _NavIntent(
           _NavSection.settings,
         ),
         SingleActivator(LogicalKeyboardKey.keyT, meta: true, shift: true):
             _OpenToolsetsIntent(),
+        SingleActivator(LogicalKeyboardKey.keyT, control: true, shift: true):
+            _OpenToolsetsIntent(),
         SingleActivator(LogicalKeyboardKey.keyP, meta: true, shift: true):
+            _OpenPanelsIntent(),
+        SingleActivator(LogicalKeyboardKey.keyP, control: true, shift: true):
             _OpenPanelsIntent(),
         SingleActivator(LogicalKeyboardKey.keyS, meta: true, shift: true):
             _OpenSettingsIntent(),
+        SingleActivator(LogicalKeyboardKey.keyS, control: true, shift: true):
+            _OpenSettingsIntent(),
         SingleActivator(LogicalKeyboardKey.keyJ, meta: true): _JobsIntent(),
+        SingleActivator(LogicalKeyboardKey.keyJ, control: true): _JobsIntent(),
         SingleActivator(LogicalKeyboardKey.keyP, meta: true): _ProjectsIntent(),
+        SingleActivator(LogicalKeyboardKey.keyP, control: true):
+            _ProjectsIntent(),
       },
       child: Actions(
         actions: {

@@ -230,11 +230,14 @@ class _AgentShellState extends State<AgentShell> {
           ),
         );
       }
-      // On a Mac the strip floats in the same row as the traffic lights
-      // (the design's desktop top edge). On a phone the agent chips sit at the
-      // very top of the screen (highest hierarchy: agent > session > transcript),
-      // rendered above the session top bar.
-      final isPhone = defaultTargetPlatform != TargetPlatform.macOS;
+      // On desktop (macOS/Windows/Linux) the tab strip floats at the top edge
+      // with full sidebar and workspace. On a phone (or narrow width) the agent
+      // chips sit above the session top bar.
+      final isDesktop =
+          defaultTargetPlatform == TargetPlatform.macOS ||
+          defaultTargetPlatform == TargetPlatform.windows ||
+          defaultTargetPlatform == TargetPlatform.linux;
+      final isPhone = !isDesktop || MediaQuery.sizeOf(context).width < 720;
       final strip = _TabStrip(tabs: _tabs, onAdd: _addAgent, onClose: _close);
       return Scaffold(
         body: isPhone

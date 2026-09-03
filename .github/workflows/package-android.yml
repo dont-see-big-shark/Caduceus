@@ -1,0 +1,63 @@
+name: Package Android Release
+
+on:
+  push:
+    tags:
+      - 'alpha-*'
+      - 'beta-*'
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.0'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: flutter_app
+
+      - name: Run tests
+        run: flutter test
+        working-directory: flutter_app
+
+      - name: Build Android APK
+        run: flutter build apk --release
+        working-directory: flutter_app
+
+      - name: Build Android App Bundle (AAB)
+        run: flutter build appbundle --release
+        working-directory: flutter_app
+
+      - name: Prepare artifacts
+        run: |
+          mkdir -p dist
+          VERSION=$(sed -n 's/^version: \([0-9.]*\).*/\1/p' flutter_app/pubspec.yaml)
+          cp flutter_app/build/app/outputs/flutter-apk/app-release.apk dist/Caduceus-${VERSION}-android.apk
+          cp flutter_app/build/app/outputs/bundle/release/app-release.aab dist/Caduceus-${VERSION}-android.aab
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.apk
+            dist/*.aab
+          generate_release_notes: true

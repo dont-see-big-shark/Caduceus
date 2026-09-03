@@ -674,6 +674,8 @@ class _ConsoleViewState extends State<ConsoleView> {
         bindings: {
           const SingleActivator(LogicalKeyboardKey.keyK, meta: true): () =>
               showCommandPalette(context, sessionCommands(_actions)),
+          const SingleActivator(LogicalKeyboardKey.keyK, control: true): () =>
+              showCommandPalette(context, sessionCommands(_actions)),
         },
         child: LayoutBuilder(
           builder: (context, box) {

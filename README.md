@@ -13,7 +13,7 @@ macOS · iOS · Android · Windows
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?logo=dart&logoColor=white)](https://dart.dev)
 [![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20iOS%20%7C%20Android%20%7C%20Windows-555555.svg?logo=apple&logoColor=white)](#)
-[![Tests](https://img.shields.io/badge/tests-830%2B%20passed-success.svg?logo=github-actions&logoColor=white)](#)
+[![Tests](https://img.shields.io/badge/tests-850%2B%20passed-success.svg?logo=github-actions&logoColor=white)](#)
 [![Architecture](https://img.shields.io/badge/architecture-multi--agent%20seam-8A2BE2.svg)](docs/ARCHITECTURE.md)
 [![Design](https://img.shields.io/badge/design-Liquid%20Glass-FF69B4.svg)](docs/DESIGN.md)
 [![Streaming Jank](https://img.shields.io/badge/streaming%20jank-0.0%25-brightgreen.svg)](docs/BENCHMARKS.md)
@@ -61,9 +61,9 @@ If you drive an agent from your phone on the go and from a workstation at your d
 - [ ] **3. Extended Agent Harnesses**
   - [ ] Support for **Pi** and other emerging autonomous agent harnesses
   - [ ] Extensible adapter interface for custom REST/WebSocket agent backends
-- [ ] **4. Cross-Platform Expansion**
-  - [ ] **Windows**: Native desktop build, window chrome styling, MSIX packaging
-  - [ ] **Android**: Phone & tablet adaptive layouts with Material elevation parity
+- [x] **4. Cross-Platform Expansion**
+  - [x] **Windows**: Native Win32 desktop build, custom min/max window constraints, responsive sidebar/rail, dual Ctrl/⌘ shortcuts, and portable ZIP distribution
+  - [x] **Android**: Edge-to-edge transparent system overlay, permissions (mic/camera), unified mobile UX parity with iOS, verified on Android 13/16
 - [ ] **5. Comprehensive Resource & Context Sharing**
   - [ ] Unified **Skill** synchronisation and cross-agent installation
   - [ ] Bi-directional **Memory** synchronization, auto-drift detection, and dispute arbitration
@@ -196,7 +196,25 @@ flutter analyze
 flutter test
 ```
 
-Current test suite status: **830+ tests passing, 0 analysis issues**.
+Current test suite status: **850+ tests passing, 0 analysis issues**.
+
+---
+
+## Building & Releases
+
+```bash
+# macOS DMG package
+./scripts/package_macos.sh
+
+# Android Release APK & AAB
+cd flutter_app
+flutter build apk --release
+flutter build appbundle --release
+
+# Windows Desktop Release (on Windows)
+cd flutter_app
+flutter build windows --release
+```
 
 ---
 
