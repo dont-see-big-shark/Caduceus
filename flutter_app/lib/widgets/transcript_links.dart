@@ -53,7 +53,7 @@ Future<void> _showServerPath(
 }) async {
   // `file:///srv/x` → `/srv/x`. Keeping the scheme in the copied text would
   // make it useless to paste into scp or an editor.
-  final path = uri.toFilePath();
+  final path = uri.path.isNotEmpty ? uri.path : uri.toFilePath();
   if (!context.mounted) return;
   await showDialog<void>(
     context: context,

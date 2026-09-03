@@ -226,11 +226,27 @@ class ConnectionStore {
     final connections = List<SavedConnection>.from(await list());
     // Identify by URL so reconnecting to a known server updates rather than
     // accumulating duplicates.
-    final resolvedId =
-        id ??
-        connections.where((c) => c.url == url).map((c) => c.id).followedBy([
-          DateTime.now().microsecondsSinceEpoch.toString(),
-        ]).first;
+    final String resolvedId;
+    if (id != null) {
+      resolvedId = id;
+    } else {
+      final existing = connections
+          .where((c) => c.url == url)
+          .map((c) => c.id)
+          .firstOrNull;
+      if (existing != null) {
+        resolvedId = existing;
+      } else {
+        final base = DateTime.now().microsecondsSinceEpoch.toString();
+        var candidate = base;
+        var counter = 1;
+        while (connections.any((c) => c.id == candidate)) {
+          candidate = '${base}_$counter';
+          counter++;
+        }
+        resolvedId = candidate;
+      }
+    }
 
     final entry = SavedConnection(
       id: resolvedId,
