@@ -240,6 +240,11 @@ class _AgentShellState extends State<AgentShell> {
       final isPhone = !isDesktop || MediaQuery.sizeOf(context).width < 720;
       final strip = _TabStrip(tabs: _tabs, onAdd: _addAgent, onClose: _close);
       return Scaffold(
+        // Only the innermost Scaffold (the phone's session page, or the
+        // screen a route builds) resizes for the keyboard. This shell hosts
+        // whole screens that already carry their own Scaffold; resizing here
+        // too would subtract the keyboard height twice.
+        resizeToAvoidBottomInset: false,
         body: isPhone
             ? Column(
                 children: [

@@ -364,6 +364,12 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
         child: Focus(
           autofocus: true,
           child: Scaffold(
+            // The phone path (`_CompactShell`) builds its own Scaffold around
+            // the session page, and that innermost one is what resizes for
+            // the keyboard. Resizing here as well would subtract the keyboard
+            // height twice. (Desktop has no soft keyboard, so this is a
+            // no-op there either way.)
+            resizeToAvoidBottomInset: false,
             // Scoped rebuilds. A blanket setState on every workspace notify
             // rebuilt the sidebar *and* the transcript pane on each unread
             // flag flip during streaming; the transcript in particular has no
@@ -1404,6 +1410,10 @@ class _CompactShell extends StatelessWidget {
       builder: (context, _) {
         final console = workspace.active;
         return Scaffold(
+          // Deliberately the default `resizeToAvoidBottomInset: true`: this
+          // is the innermost Scaffold on the session page, so it is the one
+          // that lifts the composer above the keyboard. The shells above
+          // opt out, so the inset is consumed exactly once.
           // 遮罩透明度随位移线性变化 — and it has to be weighted per mode.
           // Material's default is black at 54%, which over a dark transcript
           // is barely noticeable and over a light one turns the conversation

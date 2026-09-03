@@ -213,6 +213,57 @@ void main() {
     expect(_composerFocused(tester), isFalse);
   });
 
+  testWidgets('keyboard opening keeps the composer field and its focus', (
+    tester,
+  ) async {
+    // Android release: 键盘闪退 — tapping the field raised the keyboard, the
+    // shrunken body flipped the composer into its tight branch, the remount
+    // dropped focus, and the keyboard dismissed itself. The layout must key
+    // off the keyboard-independent screen size so typing never rebuilds the
+    // field it is typing into.
+    tester.view.physicalSize = const Size(393, 852);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    final (workspace, socket) = await _connected();
+    addTearDown(workspace.dispose);
+    final console = await _console(tester, workspace, socket);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData(platform: TargetPlatform.android),
+        home: Scaffold(
+          body: ConsoleView(workspace: workspace, console: console),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    TextField field() => tester.widget<TextField>(find.byType(TextField).last);
+    expect(field().maxLines, 6);
+
+    await tester.tap(find.byType(TextField).last);
+    await tester.pump();
+    expect(
+      tester.testTextInput.isVisible,
+      isTrue,
+      reason: 'the field was tapped, so it should be up',
+    );
+
+    // The keyboard arrives and takes half the screen.
+    tester.view.viewInsets = const FakeViewPadding(bottom: 500);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(
+      field().maxLines,
+      6,
+      reason: 'the layout must not flip branches while typing',
+    );
+    expect(_composerFocused(tester), isTrue);
+    expect(tester.testTextInput.isVisible, isTrue);
+  });
+
   _nestedScrollTests();
 }
 

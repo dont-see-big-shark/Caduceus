@@ -59,9 +59,9 @@ class ConsoleComposer extends StatefulWidget {
 
   /// The height the console actually has, from its `LayoutBuilder`.
   ///
-  /// `MediaQuery.viewInsets` is zero in here — `Scaffold` subtracts the
-  /// keyboard before building the body — so the old check saw a full-height
-  /// screen and never went tight when it mattered.
+  /// Kept for callers that already pass it; the compact layout itself keys
+  /// off the keyboard-independent screen size instead (see build), so opening
+  /// the keyboard never flips the composer's structure and drops focus.
   final double availableHeight;
 
   final SessionConsole console;
@@ -609,6 +609,10 @@ class ConsoleComposerState extends State<ConsoleComposer> {
         onChanged: _onInputChanged,
         minLines: 1,
         maxLines: veryTight ? 1 : (tight ? 2 : 6),
+        // Multiline pairs with maxLines > 1. Left at the default `text` type,
+        // some Android IMEs treat the field as single-line while the widget
+        // allows several, and the enter/send key misbehaves.
+        keyboardType: TextInputType.multiline,
         style: Theme.of(context).textTheme.bodyMedium,
         decoration: InputDecoration(
           hintText: _c.streaming
@@ -636,14 +640,21 @@ class ConsoleComposerState extends State<ConsoleComposer> {
       listenable: _c,
       builder: (context, _) {
         final media = MediaQuery.of(context);
-        final room = widget.availableHeight;
-        final tight = room < 420;
+        // Keyboard-independent compactness. `availableHeight` is the
+        // Scaffold-shrunken body, so it collapses the moment the keyboard
+        // opens; deriving the layout from it remounted the TextField into a
+        // different branch on every show/hide, dropping focus and dismissing
+        // the keyboard again (键盘闪退 on Android). The screen size never
+        // moves with the keyboard, so the branch stays put while typing.
+        // Portrait phones are never tight; landscape phones always are.
+        final screen = media.size;
+        final tight = screen.width > screen.height && screen.height < 600;
         // Landscape with a keyboard up leaves under 200 points for the whole
         // console. Two lines of field fit at the default text size and
         // overflow by 11 at ×1.3 — so the *scaled* line height decides, not
         // the raw number of points.
         final lineHeight = media.textScaler.scale(14) * 1.7;
-        final veryTight = room - 44 - lineHeight * 2 < 90;
+        final veryTight = tight && screen.height - 44 - lineHeight * 2 < 90;
         final dark = Theme.of(context).brightness == Brightness.dark;
         // A phone has no room for a tools band *and* a card — the design's
         // `composer-tools` row (model chip) floats above the glass card, so
